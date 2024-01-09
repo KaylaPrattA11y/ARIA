@@ -142,6 +142,11 @@ export class Aria {
    */
   isCheckedOrSelected = t => this.isChecked(t) || this.isSelected(t);
 
+  /**
+   * @desc Whether the Target Element is currently disabled/enabled
+   * @param {Element} t Target Element
+   * @returns Boolean
+   */
   isDisabled = t => {
     if (!this.canDisable(t)) return false;
     if (t.getAttribute("aria-disabled")) {
@@ -183,7 +188,7 @@ export class Aria {
    * @param {Element} t Target Element
    * @returns Array of Elements
    */
-  getControlsElements = t => this.getControls(t).map(id => document.getElementById(id));
+  getControlsElements = t => this.getControls(t)?.map(id => document.getElementById(id));
 
   /**
    * @desc Get the element(s) that control the Target Element
@@ -221,9 +226,9 @@ export class Aria {
     }
     // check if a <label> element exists last
     if (this.getLabelElement(t)) {
-      return this.getLabelElement(t).innerText;
+      return this.getLabelElement(t).textContent;
     }
-    console.error(`No label available for element: ${t}`)
+    console.error(`No label available for element: ${t}`);
     return "NO LABEL AVAILABLE";
   }
 
@@ -256,9 +261,9 @@ export class Aria {
   /**
    * @desc Gets the last focusable element inside Target Element
    * @param {Element} t Target Element
-   * @returns Node
+   * @returns Element
    */
-  getLastFocusableNode(t) {
+  getLastFocusableElement(t) {
     return this.getFocusableElements(t).reverse().find(element =>
       element.tabIndex > -1
     );
@@ -267,9 +272,9 @@ export class Aria {
   /**
    * @desc Gets the first focusable element inside Target Element
    * @param {Element} t Target Element
-   * @returns Node
+   * @returns Element
    */
-  getFirstFocusableNode(t) {
+  getFirstFocusableElement(t) {
     return this.getFocusableElements(t).find(element =>
       element.tabIndex > -1
     );
