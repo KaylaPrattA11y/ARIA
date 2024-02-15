@@ -4,7 +4,7 @@ export class Aria {
   focusableElements = 'audio, button, canvas, details, iframe, [href], input, select, summary, textarea, video, progress, [accesskey], [contenteditable], [tabindex]:not([tabindex="-1"])';
 
   // roles that can have [aria-disabled]
-  disabledRoles = ["button", "group", "input", "link", "menuitem", "menuitemradio", "menuitemcheckbox", "tab", "combobox", "listbox", "radio", "radiogroup", "checkbox", "select", "switch", "tablist", "textbox", "toolbar"];
+  disabledRoles = ["button", "group", "input", "link", "option", "menuitem", "menuitemradio", "menuitemcheckbox", "tab", "combobox", "listbox", "radio", "radiogroup", "checkbox", "select", "switch", "tablist", "textbox", "toolbar"];
 
   // tags that can be :disabled
   disabledTags = ["BUTTON", "FIELDSET", "OPTGROUP", "OPTION", "SELECT", "TEXTAREA", "INPUT", "PROGRESS", "A"];
@@ -87,7 +87,7 @@ export class Aria {
    * @param {Element} t Target Element
    * @returns Boolean
    */
-  isMultiselectable = t => t.getAttribute("aria-multiselectable") === "true";
+  isMultiselectable = t => t.getAttribute("aria-multiselectable") === "true" || t.hasAttribute("multiple");
 
   /**
    * @desc Whether the Target Element is currently expanded
