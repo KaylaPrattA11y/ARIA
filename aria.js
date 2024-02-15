@@ -346,7 +346,7 @@ export class Aria {
   }
 
   /**
-   * @desc Updates atrributes specifically for the `<a>` element
+   * @desc Updates attributes specifically for the `<a>` element
    * @param {Element} a The `<a>` element
    * @param {Boolean} doDisable 
    */
