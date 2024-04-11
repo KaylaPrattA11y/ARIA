@@ -1,3 +1,5 @@
+import getRandomNumber from "js/strings/getRandomNumber"
+
 export class Aria {
 
   // all focusable elements
@@ -156,6 +158,20 @@ export class Aria {
   }
 
   /**
+   * @desc Get the ID(s) of the element(s) that the Target Element is described by
+   * @param {Element} t Target Element
+   * @returns Array of Strings
+   */
+  getDescribedby = t => t.getAttribute("aria-describedby")?.split(" ");
+
+  /**
+   * @desc Get the element(s) that the Target Element is described by
+   * @param {Element} t Target Element
+   * @returns Array of Elements
+   */
+  getDescribedbyElements = t => this.getDescribedby(t).map(id => document.getElementById(id));
+
+  /**
    * @desc Get the ID(s) of the element(s) that the Target Element is labeled by
    * @param {Element} t Target Element
    * @returns Array of Strings
@@ -208,17 +224,13 @@ export class Aria {
   /**
    * @desc Get a text string that labels the Target Element
    * @param {Element} t Target Element
+   * @param {String} joiner Define the way to join the array of text strings, if applicable
    * @returns String
    */
-  getLabelText(t) {
+  getLabelText(t, joiner = " ") {
     // check aria-labelledby attribute first
     if (this.getLabelledby(t)) {
-      const labels = [];
-
-      this.getLabelledbyElements(t).forEach(el => {
-        labels.push(el.innerText);
-      });
-      return labels.join(" ");
+      return [...this.getLabelledbyElements(t)].map(el => el.textContent).join(joiner);
     }
     // check aria-label attribute next
     if (t.getAttribute("aria-label")) {
@@ -229,7 +241,30 @@ export class Aria {
       return this.getLabelElement(t).textContent;
     }
     console.error(`No label available for element: ${t}`);
-    return "NO LABEL AVAILABLE";
+    return null;
+  }
+
+  /**
+   * @desc Get a text string that describes the Target Element
+   * @param {Element} t Target Element
+   * @param {String} joiner Define the way to join the array of text strings, if applicable
+   * @returns String
+   */
+  getDescribedbyText(t, joiner = " ") {
+    return [...this.getDescribedbyElements(t)].map(el => el.textContent).join(joiner);
+  }
+
+  /**
+   * @desc Get a text string from the nearest `<legend>` element
+   * @param {Element} t Target Element
+   * @returns String
+   */
+  getLegendText = t => {
+    if (t.closest("fieldset")?.firstElementChild?.tagName === "LEGEND") {
+      return t.closest("fieldset")?.firstElementChild.textContent;
+    }
+    console.error(`No legend available for element: ${t}`);
+    return null;
   }
 
   /**
@@ -371,6 +406,24 @@ export class Aria {
   makeUntabbable = (c, isUntabbable = true) => {
     const tels = c.querySelectorAll(this.focusableElements);
     tels.forEach(el => el.setAttribute("tabindex", isUntabbable ? "-1" : "0"));
+  }
+
+  /**
+   * @desc Checks for elements that may already have the ID, and will re-generate until a unique ID is created
+   * @param {String} id An alphanumeric string that serve as the beginning of the ID name
+   * @returns Unique ID String with the following format: `"idString0000000"`
+   */
+  generateUniqueID = (id = "id") => {
+    const beginsWithAlpha = /^[a-zA-Z]/.test(id);
+    if (!beginsWithAlpha) {
+      console.error(`The generated ID string must begin only with alpha (A-Za-z) characters. Your string: ${id}`);
+      return null;
+    }
+    let generatedId = `${id}${getRandomNumber()}`;
+    while (document.getElementById(generatedId)) {
+      generatedId = `${id}${getRandomNumber()}`;
+    }
+    return generatedId;
   }
 
 }
