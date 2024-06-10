@@ -1,4 +1,4 @@
-import getRandomNumber from "js/strings/getRandomNumber"
+const getRandomNumber = (min = 1000000, max = 9999999) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 export class Aria {
 
